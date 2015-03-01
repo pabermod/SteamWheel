@@ -12,6 +12,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
+            <RowDefinition MaxHeight ="200"/>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -21,7 +22,11 @@
             Steam Wheel
         </TextBlock>
 
-        <StackPanel Name="myStackPanel" Grid.Row="2" Margin="20, 0, 20, 0">
+        <StackPanel Name="myStackPanel" 
+                    Grid.Row="1" 
+                    Margin="20, 0, 20, 0"
+                    HorizontalAlignment="Left"
+                    Width="235">
 
             <TextBlock HorizontalAlignment="Left" 
                    TextWrapping="Wrap" 
@@ -29,39 +34,38 @@
                     FontSize="24"/>
 
             <TextBox Name="steamIdTextBox" 
-                     Text="76561197986092976"
+                     Text="your steamID64"
                      TextAlignment="Right"
-                     HorizontalAlignment="Left" 
-                     MinWidth="234"
-                     TextWrapping="Wrap" 
+                     HorizontalAlignment="Stretch"
+                     TextWrapping="NoWrap"
                      VerticalAlignment="Top" 
                      InputScope="Number"
-                     FontSize="24"
+                     FontSize="24" 
                      GotFocus="steamIdTextBox_GotFocus"/>
             
             <Button 
                 Content="Spin it!" 
                 HorizontalAlignment="Stretch" 
-                VerticalAlignment="Stretch" 
-                Margin="0,0,206,0" 
+                VerticalAlignment="Stretch"  
                 Click="Button_Click"/>
 
+        </StackPanel>
 
-            <TextBlock HorizontalAlignment="Left" 
-                   TextWrapping="Wrap" 
-                   Text="Game to play:"
-                   FontSize="24"
-                   Margin="0,20,0,0"
-                   />
-
+        <StackPanel Name="MyStackPanel_2"
+                    Grid.Row="2"
+                    Margin="20, 0, 20, 0">
+            
             <TextBlock Name="gameToPlay" 
                        HorizontalAlignment="Left" 
                    TextWrapping="Wrap" 
                    VerticalAlignment="Top"
-                    FontSize="36"
+                   FontSize="36"
+                   />
+            <Image x:Name="m_Image"              
+                   Stretch="UniformToFill"                
+                   HorizontalAlignment="Left"
                    />
 
         </StackPanel>
-
     </Grid>
 </Page>

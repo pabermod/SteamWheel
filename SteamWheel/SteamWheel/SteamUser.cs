@@ -5,6 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.IO;
+using Windows.Storage;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.Networking.Connectivity;
 
 namespace SteamWheel
 {  
@@ -51,7 +56,7 @@ namespace SteamWheel
     {
         private string _steamId;
         private string APIKey = "453412963F6C3B0EBD4ED9C2C79822DD";
-        private string webText = string.Empty;
+       // private string webText = string.Empty;
         private Random R = new Random();
 
         public string steamId
@@ -67,8 +72,9 @@ namespace SteamWheel
 
         public async Task<string> getUserName()
         {
+            
             var url = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" + APIKey + "&steamids=" + _steamId;
-            webText = await GetWebPageAsync(url); //async method, saves json_data in "content" string.
+            string webText = await GetWebPageAsync(url); //async method, saves json_data in "content" string.
             var rootObject = _download_serialized_json_data<RootObject>(webText);
             return rootObject.response.players[0].personaname;
         }
@@ -77,7 +83,7 @@ namespace SteamWheel
         {
             // Start an async task. 
             Task<string> getStringTask = (new HttpClient()).GetStringAsync(url);
-            webText = await getStringTask;
+            string webText = await getStringTask;
             return webText;
         }
 
@@ -87,21 +93,33 @@ namespace SteamWheel
             return !string.IsNullOrEmpty(json_data) ? JsonConvert.DeserializeObject<T>(json_data) : new T();
         }
 
-        public async Task<string> getGame()
+        public async Task<List<object>> getGame()
         {
+            bool is_wifi_connected = false;
+            ConnectionProfile current_connection_for_internet = NetworkInformation.GetInternetConnectionProfile();
+            if (current_connection_for_internet.IsWlanConnectionProfile)
+            {
+                if (current_connection_for_internet.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess)
+                {
+                    is_wifi_connected = true;
+                }
+            }
+
             var url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + APIKey + "&steamid=" + _steamId + "&format=json&include_appinfo=1";
-            webText = await GetWebPageAsync(url); //async method, saves json_data in "content" string.
+            string webText = await GetWebPageAsync(url); //async method, saves json_data in "content" string.
             var rootObject = _download_serialized_json_data<RootObject>(webText);
             int num_games = rootObject.response.game_count;
             int rand_game = R.Next(num_games);
-            await getLogo(rand_game, rootObject.response.games[rand_game].img_logo_url);
-            return rootObject.response.games[rand_game].name;
-        }
-
-        private async Task getLogo(int appid, string img_logo_url)
-        {
-            var url = "http://media.steampowered.com/steamcommunity/public/images/apps/" + appid + "/" + img_logo_url + ".jpg";
-        }
+            ImageSource imgsrc;
+            if(is_wifi_connected)
+                imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + rootObject.response.games[rand_game].appid + "/header.jpg"));
+            else
+                imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + rootObject.response.games[rand_game].appid + "/header_292x136.jpg"));
+            List<object> result = new List<object>();
+            result.Add(rootObject.response.games[rand_game].name);
+            result.Add(imgsrc);
+            return result;
+        }   
 
     }
 }

@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Navigation;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Newtonsoft.Json;
+using Windows.UI.Xaml.Media.Imaging;
+
 
 // La plantilla de elemento Página en blanco está documentada en http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -52,13 +54,15 @@ namespace SteamWheel
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             SteamUser user = new SteamUser(steamIdTextBox.Text);
-            gameToPlay.Text = await user.getGame();
-        }
+            List<object> resultados = await user.getGame();
+            gameToPlay.Text = (string)resultados[0];
+            m_Image.Source = (ImageSource)resultados[1];
+       }
 
 
         private void steamIdTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-           // steamIdTextBox.Text = "";         
+            steamIdTextBox.Text = "";  
         }
 
     }

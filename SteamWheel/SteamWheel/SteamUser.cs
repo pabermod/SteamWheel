@@ -12,7 +12,10 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.Networking.Connectivity;
 
 namespace SteamWheel
-{  
+{
+    /*
+    * Structure containing extensive player info.
+    */
     public class Player
     {
         public string steamid { get; set; }
@@ -31,6 +34,10 @@ namespace SteamWheel
         public int personastateflags { get; set; }
         public string loccountrycode { get; set; }
     }
+
+    /*
+    * Structure containing game info.
+    */
     public class Game
     {
         public int appid { get; set; }
@@ -41,35 +48,52 @@ namespace SteamWheel
         public bool has_community_visible_stats { get; set; }
         public int? playtime_2weeks { get; set; }
     }
+
+    /*
+    * Structure the possible responses of the WebAPI call.
+    */
     public class Response
     {
         public List<Player> players { get; set; }
         public int game_count { get; set; }
         public List<Game> games { get; set; }
     }
+
+    /*
+    * The root object of the WebAPI call.
+    */
     public class RootObject
     {
         public Response response { get; set; }
     }
-     
+
+    /*
+    * Main Class.
+    */
     public class SteamUser
     {
+        // Private variables
         private string _steamId;
         private string APIKey = "453412963F6C3B0EBD4ED9C2C79822DD";
-       // private string webText = string.Empty;
         private Random R = new Random();
 
+        // get-set for steamId
         public string steamId
         {
             get { return _steamId; }
             set { _steamId = value; }
         }
 
+        // Default method
         public SteamUser(string steamId)
         {
             _steamId = steamId;
         }
 
+
+        /*
+        * Async method to get the player info
+        */
         public async Task<string> getUserName()
         {
             
@@ -79,20 +103,9 @@ namespace SteamWheel
             return rootObject.response.players[0].personaname;
         }
 
-        private async Task<string> GetWebPageAsync(string url)
-        {
-            // Start an async task. 
-            Task<string> getStringTask = (new HttpClient()).GetStringAsync(url);
-            string webText = await getStringTask;
-            return webText;
-        }
-
-        private static T _download_serialized_json_data<T>(string json_data) where T : new()
-        {
-            // if string with JSON data is not empty, deserialize it to class and return its instance 
-            return !string.IsNullOrEmpty(json_data) ? JsonConvert.DeserializeObject<T>(json_data) : new T();
-        }
-
+        /*
+        * Async method to get a random game from an user gamelist
+        */
         public async Task<List<object>> getGame()
         {
             bool is_wifi_connected = false;
@@ -111,7 +124,7 @@ namespace SteamWheel
             int num_games = rootObject.response.game_count;
             int rand_game = R.Next(num_games);
             ImageSource imgsrc;
-            if(is_wifi_connected)
+            if (is_wifi_connected)
                 imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + rootObject.response.games[rand_game].appid + "/header.jpg"));
             else
                 imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + rootObject.response.games[rand_game].appid + "/header_292x136.jpg"));
@@ -120,6 +133,26 @@ namespace SteamWheel
             result.Add(imgsrc);
             return result;
         }   
+
+        /*
+        * Async method to get the data (json formatted) from an url
+        */
+        private async Task<string> GetWebPageAsync(string url)
+        {
+            // Start an async task. 
+            Task<string> getStringTask = (new HttpClient()).GetStringAsync(url);
+            string webText = await getStringTask;
+            return webText;
+        }
+
+        /*
+        * Method to deserialize json data
+        */
+        private static T _download_serialized_json_data<T>(string json_data) where T : new()
+        {
+            // if string with JSON data is not empty, deserialize it to class and return its instance 
+            return !string.IsNullOrEmpty(json_data) ? JsonConvert.DeserializeObject<T>(json_data) : new T();
+        }
 
     }
 }

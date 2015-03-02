@@ -72,15 +72,22 @@ namespace SteamWheel
                     hyperLinkImg.NavigateUri = (Uri)resultados[2];
                 }
 
-                    //If the http request fails, it means an user couldn't be found
+                //If the http request fails, it means an user couldn't be found
                 catch (System.Net.Http.HttpRequestException)
                 {
-                    messagePop("User not found. Make sure the steamID64 is correct and you have an active internet connection.");
+                    messagePop("User not found. Make sure the steamID64 is correct.");
                 }
-                    //Any other exception
+
+                //If there isn't any internet connection.
+                catch (System.NullReferenceException)
+                {
+                    messagePop("An active internet connection is needed.");
+                }
+
+                //Any other exception
                 catch (Exception ex)
                 {
-                    messagePop("[ERROR] Exception:" + ex.Message);
+                    messagePop("[ERROR] Exception:" + ex.GetType());
                 }
 
             }

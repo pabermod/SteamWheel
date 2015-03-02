@@ -55,9 +55,10 @@ namespace SteamWheel
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (steamIdTextBox.Text.Equals("") || steamIdTextBox.Text.Equals("your steamID64"))
+            Spin_it.IsEnabled = false;
+            if (steamIdTextBox.Text.Equals(""))
             {
-                messagePop("Input your steamID64.");
+                messagePop("Enter your steamID64.", "");
             }
             else if (Regex.IsMatch(steamIdTextBox.Text, @"^\d+$"))  //If it's only numbers. (tryparse could overflow if big number)
             {
@@ -75,33 +76,35 @@ namespace SteamWheel
                 //If the http request fails, it means an user couldn't be found
                 catch (System.Net.Http.HttpRequestException)
                 {
-                    messagePop("User not found. Make sure the steamID64 is correct.");
+                    messagePop("User not found. Make sure the steamID64 is correct.", "Error");
                 }
 
                 //If there isn't any internet connection.
                 catch (System.NullReferenceException)
                 {
-                    messagePop("An active internet connection is needed.");
+                    messagePop("An active internet connection is needed.", "Error");
                 }
 
                 //Any other exception
                 catch (Exception ex)
                 {
-                    messagePop("[ERROR] Exception:" + ex.GetType());
+                    messagePop("[ERROR] Exception:" + ex.GetType(), "Error");
                 }
 
             }
             else
             {
-                messagePop("Input a correct steamID64.");
+                messagePop("Input a correct steamID64.", "Error");
+                
             }
+            Spin_it.IsEnabled = true;
        }
 
 
-        /*
-        * Handlers for the focus of the steam id box
-        */
-        private void steamIdTextBox_GotFocus(object sender, RoutedEventArgs e)
+        /* Handlers for the focus of the steam id box
+        * 
+        *
+        //private void steamIdTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (steamIdTextBox.Text.Equals("your steamID64"))
             {
@@ -117,16 +120,25 @@ namespace SteamWheel
                 steamIdTextBox.Text = "your steamID64";               
             }
         }
-
+        */
 
         /*
         * Dialog box with a close button.
         */
-        private async void messagePop(string msg)
+        private async void messagePop(string msg, string title)
         {
-            var msgDlg = new Windows.UI.Popups.MessageDialog(msg);
-            msgDlg.DefaultCommandIndex = 1;
-            await msgDlg.ShowAsync();          
+            try
+            {
+                MessageDialog msgDlg = new MessageDialog(msg, title);
+                msgDlg.Options = MessageDialogOptions.AcceptUserInputAfterDelay;
+                msgDlg.DefaultCommandIndex = 1;               
+                await msgDlg.ShowAsync();     
+            }
+            catch (Exception)
+            {
+                return;
+            }
+                 
         }
 
     }

@@ -16,60 +16,62 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Margin="20, 0, 20, 0" 
-                   Grid.Row="0" 
-                   Style="{StaticResource TitleTextBlockStyle}">
+        <TextBlock 
+            Margin="20, 0, 20, 0" 
+            Grid.Row="0" 
+            Style="{StaticResource TitleTextBlockStyle}">
             Steam Wheel
         </TextBlock>
 
-        <StackPanel Name="myStackPanel" 
-                    Grid.Row="1" 
-                    Margin="20, 0, 20, 0"
-                    HorizontalAlignment="Left"
-                    Width="235">
+        <StackPanel 
+            Name="myStackPanel" 
+            Grid.Row="1" 
+            Margin="20, 0, 20, 0"
+            HorizontalAlignment="Left"
+            Width="235">
 
-            <TextBlock HorizontalAlignment="Left" 
-                   TextWrapping="Wrap" 
-                   Text="Enter your Steam ID"
-                    FontSize="24"/>
+            <TextBlock 
+                HorizontalAlignment="Left"
+                TextWrapping="Wrap" 
+                Text="Enter your steamID64"
+                FontSize="24"/>
 
-            <TextBox Name="steamIdTextBox" 
-                     Text="your steamID64"
-                     Foreground="Gray"
-                     TextAlignment="Right"
-                     HorizontalAlignment="Stretch"
-                     TextWrapping="NoWrap"
-                     VerticalAlignment="Top" 
-                     InputScope="Number"
-                     FontSize="24" 
-                     GotFocus="steamIdTextBox_GotFocus"
-                     LostFocus="steamIdTextBox_LostFocus"/>
+            <TextBox 
+                Name="steamIdTextBox" 
+                TextAlignment="Left"
+                HorizontalAlignment="Stretch"
+                TextWrapping="NoWrap"
+                VerticalAlignment="Top" 
+                InputScope="Number"
+                FontSize="24"/>
             
-            <Button 
+            <Button
+                Name="Spin_it"
                 Content="Spin it!" 
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Stretch"  
                 Click="Button_Click"/>
-
+           
         </StackPanel>
 
-        <StackPanel Name="MyStackPanel_2"
-                    Grid.Row="2"
-                    Margin="20, 0, 20, 0">
+        <StackPanel 
+            Name="MyStackPanel_2"
+            Grid.Row="2"
+            Margin="20, 0, 20, 0">
             
-            <TextBlock Name="gameToPlay" 
-                       HorizontalAlignment="Left" 
-                   TextWrapping="Wrap" 
-                   VerticalAlignment="Top"
-                   FontSize="36"
-                   />
+            <TextBlock 
+                Name="gameToPlay" 
+                HorizontalAlignment="Left" 
+                TextWrapping="Wrap" 
+                VerticalAlignment="Top"
+                FontSize="36"/>
 
             <HyperlinkButton 
                 x:Name="hyperLinkImg">
-                <Image x:Name="m_Image"              
-                   Stretch="UniformToFill"                
-                   HorizontalAlignment="Left"
-                   />
+                <Image 
+                    x:Name="m_Image"              
+                    Stretch="UniformToFill"                
+                    HorizontalAlignment="Left"/>
             </HyperlinkButton>
 
         </StackPanel>

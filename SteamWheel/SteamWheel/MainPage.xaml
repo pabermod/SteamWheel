@@ -35,13 +35,15 @@
 
             <TextBox Name="steamIdTextBox" 
                      Text="your steamID64"
+                     Foreground="Gray"
                      TextAlignment="Right"
                      HorizontalAlignment="Stretch"
                      TextWrapping="NoWrap"
                      VerticalAlignment="Top" 
                      InputScope="Number"
                      FontSize="24" 
-                     GotFocus="steamIdTextBox_GotFocus"/>
+                     GotFocus="steamIdTextBox_GotFocus"
+                     LostFocus="steamIdTextBox_LostFocus"/>
             
             <Button 
                 Content="Spin it!" 
@@ -61,10 +63,14 @@
                    VerticalAlignment="Top"
                    FontSize="36"
                    />
-            <Image x:Name="m_Image"              
+
+            <HyperlinkButton 
+                x:Name="hyperLinkImg">
+                <Image x:Name="m_Image"              
                    Stretch="UniformToFill"                
                    HorizontalAlignment="Left"
                    />
+            </HyperlinkButton>
 
         </StackPanel>
     </Grid>

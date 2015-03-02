@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.Net.Http;
-using System.IO;
+using Windows.Networking.Connectivity;
 using Windows.Storage;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.Networking.Connectivity;
 
 namespace SteamWheel
 {
@@ -123,14 +123,17 @@ namespace SteamWheel
             var rootObject = _download_serialized_json_data<RootObject>(webText);
             int num_games = rootObject.response.game_count;
             int rand_game = R.Next(num_games);
+            int appid = rootObject.response.games[rand_game].appid;
+            Uri storelink = new Uri("http://store.steampowered.com/app/" + appid);
             ImageSource imgsrc;
             if (is_wifi_connected)
-                imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + rootObject.response.games[rand_game].appid + "/header.jpg"));
+                imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + appid + "/header.jpg"));
             else
-                imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + rootObject.response.games[rand_game].appid + "/header_292x136.jpg"));
+                imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + appid + "/header_292x136.jpg"));
             List<object> result = new List<object>();
             result.Add(rootObject.response.games[rand_game].name);
             result.Add(imgsrc);
+            result.Add(storelink);
             return result;
         }   
 

@@ -13,63 +13,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace SteamWheel
 {
-    /*
-    * Structure containing extensive player info.
-    */
-    public class Player
-    {
-        public string steamid { get; set; }
-        public int communityvisibilitystate { get; set; }
-        public int profilestate { get; set; }
-        public string personaname { get; set; }
-        public int lastlogoff { get; set; }
-        public string profileurl { get; set; }
-        public string avatar { get; set; }
-        public string avatarmedium { get; set; }
-        public string avatarfull { get; set; }
-        public int personastate { get; set; }
-        public string realname { get; set; }
-        public string primaryclanid { get; set; }
-        public int timecreated { get; set; }
-        public int personastateflags { get; set; }
-        public string loccountrycode { get; set; }
-    }
 
-    /*
-    * Structure containing game info.
-    */
-    public class Game
-    {
-        public int appid { get; set; }
-        public string name { get; set; }
-        public int playtime_forever { get; set; }
-        public string img_icon_url { get; set; }
-        public string img_logo_url { get; set; }
-        public bool has_community_visible_stats { get; set; }
-        public int? playtime_2weeks { get; set; }
-    }
-
-    /*
-    * Structure the possible responses of the WebAPI call.
-    */
-    public class Response
-    {
-        public List<Player> players { get; set; }
-        public int game_count { get; set; }
-        public List<Game> games { get; set; }
-    }
-
-    /*
-    * The root object of the WebAPI call.
-    */
-    public class RootObject
-    {
-        public Response response { get; set; }
-    }
-
-    /*
-    * Main Class.
-    */
     public class SteamUser
     {
         // Private variables
@@ -106,8 +50,10 @@ namespace SteamWheel
         /*
         * Async method to get a random game from an user gamelist
         */
-        public async Task<List<object>> getGame()
+        public async Task<List<object>> getGame(string caca)
         {
+
+            //If wifi is connected use higher quality logo
             bool is_wifi_connected = false;
             ConnectionProfile current_connection_for_internet = NetworkInformation.GetInternetConnectionProfile();
             if (current_connection_for_internet.IsWlanConnectionProfile)
@@ -118,7 +64,8 @@ namespace SteamWheel
                 }
             }
 
-            var url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + APIKey + "&steamid=" + _steamId + "&format=json&include_appinfo=1";
+            //URL for the petition
+            var url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + APIKey + "&steamid=" + caca + "&format=json&include_appinfo=1";
             string webText = await GetWebPageAsync(url); //async method, saves json_data in "content" string.
             var rootObject = _download_serialized_json_data<RootObject>(webText);
             int num_games = rootObject.response.game_count;
@@ -142,7 +89,6 @@ namespace SteamWheel
         */
         private async Task<string> GetWebPageAsync(string url)
         {
-            // Start an async task. 
             Task<string> getStringTask = (new HttpClient()).GetStringAsync(url);
             string webText = await getStringTask;
             return webText;
@@ -155,6 +101,50 @@ namespace SteamWheel
         {
             // if string with JSON data is not empty, deserialize it to class and return its instance 
             return !string.IsNullOrEmpty(json_data) ? JsonConvert.DeserializeObject<T>(json_data) : new T();
+        }
+
+        public async Task<object> prueba()
+        {
+            try
+            {
+                //Create a client
+                HttpClient httpClient = new HttpClient();
+
+                //Headers for the metacritic API
+                httpClient.DefaultRequestHeaders.Add("X-Mashape-Key", "LTIsnewGsImsh10Hh7mENQoaYhEOp10U1dtjsnKTzeLLD8o43c");
+
+                //URL
+                string url = "https://byroredux-metacritic.p.mashape.com/find/game";
+
+                // This is the postdata
+                var postData = new List<KeyValuePair<string, string>>();
+                postData.Add(new KeyValuePair<string, string>("platform", "1"));
+                postData.Add(new KeyValuePair<string, string>("retry", "4"));
+                postData.Add(new KeyValuePair<string, string>("title", "Darksiders"));
+
+                HttpContent content = new FormUrlEncodedContent(postData);
+                //"Content-type" is automatically set to "application/x-www-form-urlencoded");
+
+                var response = await httpClient.PostAsync(url, content);
+
+                //will throw an exception if not successful
+                response.EnsureSuccessStatusCode();
+
+                string result = await response.Content.ReadAsStringAsync();
+
+                RootObject rootObject = null;
+                if(!string.IsNullOrEmpty(result))
+                    rootObject = JsonConvert.DeserializeObject<RootObject>(result);
+
+                return rootObject;
+            }
+            catch (Exception e)
+            {
+                
+                return e;
+            }
+
+
         }
 
     }

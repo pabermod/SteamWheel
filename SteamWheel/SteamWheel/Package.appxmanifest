@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="8de400f4-3cce-41db-a1ea-3e8adc56d6b1" Publisher="CN=PABLO" Version="0.1.0.0" />
-  <mp:PhoneIdentity PhoneProductId="8de400f4-3cce-41db-a1ea-3e8adc56d6b1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="44539kbronctjr.SteamWheel" Publisher="CN=C0AA261B-33A8-424C-81B4-D66A524BC1C5" Version="1.1.0.0" />
+  <mp:PhoneIdentity PhoneProductId="448cfab5-ef08-4045-930d-9c3d232c4fab" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>SteamWheel</DisplayName>
-    <PublisherDisplayName>PABLO</PublisherDisplayName>
+    <PublisherDisplayName>kbronctjr</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>
@@ -17,7 +17,6 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="SteamWheel.App">
       <m3:VisualElements DisplayName="Steam Wheel" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="SteamWheel" ForegroundText="light" BackgroundColor="transparent" ToastCapable="false">
-        <m3:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png" />
         <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png">
           <m3:ShowNameOnTiles>
             <m3:ShowOn Tile="square150x150Logo" />

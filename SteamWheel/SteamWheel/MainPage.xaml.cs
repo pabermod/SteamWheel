@@ -66,17 +66,40 @@ namespace SteamWheel
 
                 try
                 {
-                    List<object> resultados = await user.getGame();
+                    if (steamIdTextBox.Text.Equals("0"))
+                    {
+                        List<object> resultados = await user.getGame("76561197986092976");
+                        gameToPlay.Text = (string)resultados[0];
+                        m_Image.Source = (ImageSource)resultados[1];
+                        hyperLinkImg.NavigateUri = (Uri)resultados[2];
+                    }
 
-                    gameToPlay.Text = (string)resultados[0];
-                    m_Image.Source = (ImageSource)resultados[1];
-                    hyperLinkImg.NavigateUri = (Uri)resultados[2];
+                    else if (steamIdTextBox.Text.Equals("1"))
+                    {
+                        object objeto = await user.prueba();
+
+                        if (objeto.GetType().ToString().Equals("SteamWheel.RootObject"))
+                        {
+                            RootObject rootObject = (RootObject)objeto;
+                            gameToPlay.Text = rootObject.result.name;
+                            ImageSource imgsrc = new BitmapImage(new Uri(rootObject.result.thumbnail));
+                            m_Image.Source = imgsrc;
+                            hyperLinkImg.NavigateUri = new Uri(rootObject.result.url);
+                        }
+
+                        else
+                        {
+                            Exception ex = (Exception)objeto;
+                            messagePop(ex.Message, "Error");
+                        }   
+                    }
+                                                           
                 }
 
                 //If the http request fails, it means an user couldn't be found
-                catch (System.Net.Http.HttpRequestException)
+                catch (System.Net.Http.HttpRequestException httpEx)
                 {
-                    messagePop("User not found. Make sure the steamID64 is correct.", "Error");
+                    messagePop(httpEx.Message, "Error");
                 }
 
                 //If there isn't any internet connection.
@@ -88,7 +111,7 @@ namespace SteamWheel
                 //Any other exception
                 catch (Exception ex)
                 {
-                    messagePop("[ERROR] Exception:" + ex.GetType(), "Error");
+                    messagePop(ex.Message, "Error");
                 }
 
             }
@@ -125,12 +148,11 @@ namespace SteamWheel
         /*
         * Dialog box with a close button.
         */
-        private async void messagePop(string msg, string title)
+        public async void messagePop(string msg, string title)
         {
             try
             {
                 MessageDialog msgDlg = new MessageDialog(msg, title);
-                msgDlg.Options = MessageDialogOptions.AcceptUserInputAfterDelay;
                 msgDlg.DefaultCommandIndex = 1;               
                 await msgDlg.ShowAsync();     
             }

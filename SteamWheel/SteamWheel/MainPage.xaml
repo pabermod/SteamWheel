@@ -8,72 +8,92 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <!-- Barra de comandos -->
+    <Page.BottomAppBar>
+        <CommandBar>
+            <CommandBar.PrimaryCommands>
+                <AppBarButton x:Name="Help"
+                              Label="Help" 
+                              Icon="Help"
+                              Click="Help_Click"/>
+                <AppBarButton x:Name="Settings"
+                              Icon="Setting" 
+                              Label="Settings"
+                              Click="Settings_Click"/>
+            </CommandBar.PrimaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar> 
 
+    <!-- Cuadricula de pagina -->
+    <Grid>       
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-            <RowDefinition MaxHeight ="200"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        
+        <!-- Panel de título -->
+        <StackPanel Grid.Row="0" Margin="19,0,0,0">
+            <TextBlock Text="STEAM WHEEL" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Text="random game" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" 
+                       CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+        </StackPanel>
 
-        <TextBlock 
-            Margin="20, 0, 20, 0" 
-            Grid.Row="0" 
-            Style="{StaticResource TitleTextBlockStyle}">
-            Steam Wheel
-        </TextBlock>
-
-        <StackPanel 
-            Name="myStackPanel" 
-            Grid.Row="1" 
-            Margin="20, 0, 20, 0"
-            HorizontalAlignment="Left"
-            Width="235">
-
-            <TextBlock 
+        <!-- Cuadrícula de contenido -->
+        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            
+            <!-- Panel de Caja de texto y boton -->    
+            <StackPanel
+                Grid.Row="0"
+                Name="myStackPanel"  
                 HorizontalAlignment="Left"
-                TextWrapping="Wrap" 
-                Text="Enter your steamID64"
-                FontSize="24"/>
+                >
 
-            <TextBox 
-                Name="steamIdTextBox" 
-                TextAlignment="Left"
-                HorizontalAlignment="Stretch"
-                TextWrapping="NoWrap"
-                VerticalAlignment="Top" 
-                InputScope="Number"
-                FontSize="24"/>
+                <TextBlock 
+                    HorizontalAlignment="Left"
+                    TextWrapping="Wrap" 
+                    Text="Enter your community name"
+                    FontSize="24"/>
+
+                <TextBox 
+                    Name="steamIdTextBox" 
+                    TextAlignment="Left"
+                    HorizontalAlignment="Stretch"
+                    TextWrapping="NoWrap"
+                    VerticalAlignment="Top"
+                    Text=""
+                    FontSize="24"/>
             
-            <Button
-                Name="Spin_it"
-                Content="Spin it!" 
-                HorizontalAlignment="Stretch" 
-                VerticalAlignment="Stretch"  
-                Click="Button_Click"/>
-           
-        </StackPanel>
-
-        <StackPanel 
-            Name="MyStackPanel_2"
-            Grid.Row="2"
-            Margin="20, 0, 20, 0">
+                <Button
+                    Name="Spin_it"
+                    Content="Spin it!" 
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Stretch"  
+                    Click="Button_Click"/>
             
-            <TextBlock 
-                Name="gameToPlay" 
-                HorizontalAlignment="Left" 
-                TextWrapping="Wrap" 
-                VerticalAlignment="Top"
-                FontSize="36"/>
+            </StackPanel>
 
-            <HyperlinkButton 
-                x:Name="hyperLinkImg">
-                <Image 
-                    x:Name="m_Image"              
-                    Stretch="UniformToFill"                
-                    HorizontalAlignment="Left"/>
-            </HyperlinkButton>
+            <!-- Panel de info del juego -->
+            <ScrollViewer Grid.Row="1">
+                <StackPanel Name="MyStackPanel_2">
+                    <TextBlock Name="gameToPlay" 
+                               Style="{ThemeResource SubheaderTextBlockStyle}"
+                               Visibility="Collapsed"/>
+                    <HyperlinkButton x:Name="hyperLinkImg">
+                        <Image 
+                            x:Name="m_Image"              
+                            Stretch="UniformToFill"                
+                            HorizontalAlignment="Left"/>
+                    </HyperlinkButton>
 
-        </StackPanel>
+                    <TextBlock Name="gameInfo" 
+                               Style="{ThemeResource SubheaderTextBlockStyle}"
+                               />
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Page>

@@ -10,6 +10,7 @@ using Windows.Networking.Connectivity;
 using Windows.Storage;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using HtmlAgilityPack;
 
 namespace SteamWheel
 {
@@ -31,7 +32,7 @@ namespace SteamWheel
         // Default method
         public SteamUser(string steamId)
         {
-            _steamId = steamId;
+            _steamId = steamId;         
         }
 
 
@@ -40,11 +41,13 @@ namespace SteamWheel
         */
         public async Task<string> getUserName()
         {
-            
-            var url = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" + APIKey + "&steamids=" + _steamId;
-            string webText = await GetWebPageAsync(url); //async method, saves json_data in "content" string.
-            var rootObject = _download_serialized_json_data<RootObject>(webText);
-            return rootObject.response.players[0].personaname;
+            string webText = await GetWebPageAsync("http://steamidconverter.com/" + _steamId);
+
+            HtmlDocument htmlDoc = new HtmlAgilityPack.HtmlDocument();
+            htmlDoc.OptionFixNestedTags = true;
+            htmlDoc.LoadHtml(webText);
+            HtmlNode divContainer = htmlDoc.GetElementbyId("steamID64");
+            return divContainer.InnerText;
         }
 
         /*
@@ -70,22 +73,22 @@ namespace SteamWheel
             var rootObject = _download_serialized_json_data<RootObject>(webText);
             int num_games = rootObject.response.game_count;
             int rand_game = R.Next(num_games);
-            int appid = rootObject.response.games[rand_game].appid;
-            Uri storelink = new Uri("http://store.steampowered.com/app/" + appid);
+            Game game = rootObject.response.games[rand_game];
+            Uri storelink = new Uri("http://store.steampowered.com/app/" + game.appid);
             ImageSource imgsrc;
             if (is_wifi_connected)
-                imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + appid + "/header.jpg"));
+                imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + game.appid + "/header.jpg"));
             else
-                imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + appid + "/header_292x136.jpg"));
+                imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + game.appid + "/header_292x136.jpg"));
             List<object> result = new List<object>();
-            result.Add(rootObject.response.games[rand_game].name);
+            result.Add(game);
             result.Add(imgsrc);
-            result.Add(storelink);
+            result.Add(storelink);         
             return result;
         }   
 
         /*
-        * Async method to get the data (json formatted) from an url
+        * Async method to get the data from an url
         */
         private async Task<string> GetWebPageAsync(string url)
         {

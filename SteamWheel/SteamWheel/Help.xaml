@@ -1,0 +1,62 @@
+﻿<Page
+    x:Class="SteamWheel.Help"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SteamWheel"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid x:Name="LayoutRoot">
+
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Panel de título -->
+        <StackPanel Grid.Row="0" Margin="19,0,0,0">
+            <TextBlock Text="STEAM WHEEL" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Text="help" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" 
+                       CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+        </StackPanel>
+
+        <!--TODO: Debe colocarse el contenido en la siguiente cuadrícula-->
+        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
+            <StackPanel>
+                <TextBox 
+                    Width="176"
+                    Name="steamIdHelp" 
+                    TextAlignment="Left"
+                    TextWrapping="NoWrap"
+                    HorizontalAlignment="Left"
+                    FontSize="24"/>
+                
+                <Button Name="goIdConverter"  
+                        Content="steamID converter" 
+                        Click="goIdConverter_Click"/>
+                <TextBlock Style="{ThemeResource ControlContextualInfoTextBlockStyle}">
+                    To get your steamID64 enter your customURL (usually the Steam username) 
+                    and press the above button. Then copy the steamID64 field of the displayed website.
+                </TextBlock>
+                <TextBlock Style="{ThemeResource ControlContextualInfoTextBlockStyle}">
+                    A customURL must be set in your steam profile settings.
+                </TextBlock>
+                <TextBlock Style="{ThemeResource ControlContextualInfoTextBlockStyle}">
+                    You can also enter an steamID / steamID3.
+                </TextBlock>
+                
+                
+                
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+</Page>

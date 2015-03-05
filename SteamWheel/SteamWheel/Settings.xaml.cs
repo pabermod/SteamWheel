@@ -1,46 +1,37 @@
-﻿using Newtonsoft.Json;
+﻿using SteamWheel.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Graphics.Display;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.Popups;
-using System.Text.RegularExpressions;
-using SteamWheel.Common;
 
-
-// La plantilla de elemento Página en blanco está documentada en http://go.microsoft.com/fwlink/?LinkId=391641
+// La plantilla de elemento Página básica está documentada en http://go.microsoft.com/fwlink/?LinkID=390556
 
 namespace SteamWheel
 {
-
     /// <summary>
     /// Página vacía que se puede usar de forma independiente o a la que se puede navegar dentro de un objeto Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class Settings : Page
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-        private messagePop msgPop = new messagePop();
-        private string _steamID64 = null;
 
-        public MainPage()
+        public Settings()
         {
             this.InitializeComponent();
 
-            this.NavigationCacheMode = NavigationCacheMode.Required;
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
@@ -116,79 +107,5 @@ namespace SteamWheel
         }
 
         #endregion
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Spin_it.IsEnabled = false;
-            if (steamIdTextBox.Text.Equals(""))
-            {
-                msgPop.Pop("Enter your community name /steamID / steamID3 / steamID64.", "");
-            }
-            else if (!Regex.IsMatch(steamIdTextBox.Text, @"^\d+$"))  //If it's only numbers. (tryparse could overflow if big number)
-            {
-                SteamUser user = new SteamUser(steamIdTextBox.Text);
-                try
-                {
-                    if (string.IsNullOrEmpty(_steamID64))
-                    {                 
-                        _steamID64 = await user.getUserName();
-                    }
-
-                    List<object> resultados = await user.getGame(_steamID64);
-                    Game game = (Game)resultados[0];
-                    m_Image.Source = (ImageSource)resultados[1];
-                    hyperLinkImg.NavigateUri = (Uri)resultados[2];
-                    string time = null;
-                    if (game.playtime_forever < 60)
-                    {
-                        time = game.playtime_forever + " mins.";
-                    }
-                    else
-                        time = String.Format("{0:0.##}", (double)game.playtime_forever / 60) + " hours.";
-
-                    gameInfo.Text = "You have played " + time;                   
-                        
-                                     
-                }
-
-                //If the http request fails, it means an user couldn't be found
-                catch (System.Net.Http.HttpRequestException httpEx)
-                {
-                    msgPop.Pop(httpEx.Message, "Error");
-                }
-
-                //If there isn't any internet connection.
-                catch (System.NullReferenceException)
-                {
-                    msgPop.Pop("An active internet connection is needed.", "Error");
-                }
-
-                //Any other exception
-                catch (Exception ex)
-                {
-                    msgPop.Pop(ex.Message, "Error");
-                }
-
-            }
-            else
-            {
-
-                msgPop.Pop("Input a correct steamID64.", "Error");
-                
-            }
-            Spin_it.IsEnabled = true;
-       }
-
-
-        private void Help_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Help));
-        }
-
-        private void Settings_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Settings));
-        }
-
     }
 }

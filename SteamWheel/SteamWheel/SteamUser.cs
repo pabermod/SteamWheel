@@ -93,23 +93,30 @@ namespace SteamWheel
 
             //URL for the petition
             var url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + APIKey + "&steamid=" + steamID64 + "&format=json&include_appinfo=1";
-            string webText = await GetWebPageAsync(url); //async method, saves json_data in "content" string.        
+            string webText;
+            try 
+            {
+            webText = await GetWebPageAsync(url); //async method, saves json_data in "content" string.   
+            }
+            catch
+            {
+            throw new Exception("User not found.");
+            }                
             var rootObject = _download_serialized_json_data<RootObject>(webText);
             int num_games = rootObject.response.game_count;
             int rand_game = R.Next(num_games);
             Game game;
             try { game = rootObject.response.games[rand_game]; }
             catch (Exception) { throw new Exception("User not found."); }       
-            Uri storelink = new Uri("http://store.steampowered.com/app/" + game.appid);
             ImageSource imgsrc;
             if (is_wifi_connected)
                 imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + game.appid + "/header.jpg"));
             else
                 imgsrc = new BitmapImage(new Uri("http://cdn.akamai.steamstatic.com/steam/apps/" + game.appid + "/header_292x136.jpg"));
+            //236830
             List<object> result = new List<object>();
             result.Add(game);
-            result.Add(imgsrc);
-            result.Add(storelink);         
+            result.Add(imgsrc);      
             return result;
         }   
 
@@ -122,9 +129,9 @@ namespace SteamWheel
                 string webText = await getStringTask;
                 return webText;
             }
-            catch (Exception)
+            catch
             {
-                throw new Exception("Internezz");
+                throw new NullReferenceException();
             }
         }
 

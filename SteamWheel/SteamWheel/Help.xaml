@@ -31,30 +31,28 @@
         <!--TODO: Debe colocarse el contenido en la siguiente cuadrícula-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
             <StackPanel>
-                <TextBox 
-                    Width="176"
-                    Name="steamIdHelp" 
-                    TextAlignment="Left"
-                    TextWrapping="NoWrap"
-                    HorizontalAlignment="Left"
-                    FontSize="24"/>
-                
-                <Button Name="goIdConverter"  
-                        Content="steamID converter" 
-                        Click="goIdConverter_Click"/>
                 <TextBlock Style="{ThemeResource ControlContextualInfoTextBlockStyle}">
-                    To get your steamID64 enter your customURL (usually the Steam username) 
-                    and press the above button. Then copy the steamID64 field of the displayed website.
+                    Your Steam community name, also known as customURL is usually 
+                    your username.  A customURL must be set in your steam profile
+                    settings and your profile must be public. Your profile link will be like:
+                </TextBlock>
+                <TextBlock FontSize="14" Style="{ThemeResource ControlContextualInfoTextBlockStyle}">
+                    http://steamcommunity.com/id/customURL   
                 </TextBlock>
                 <TextBlock Style="{ThemeResource ControlContextualInfoTextBlockStyle}">
-                    A customURL must be set in your steam profile settings.
+                    If you have private profile, you can also enter your steamID64, which is unique.
+                    You can get it from your profile link, which is like:
+                </TextBlock>
+                <TextBlock FontSize="14" Style="{ThemeResource ControlContextualInfoTextBlockStyle}">
+                http://steamcommunity.com/profiles/steamID64
                 </TextBlock>
                 <TextBlock Style="{ThemeResource ControlContextualInfoTextBlockStyle}">
-                    You can also enter an steamID / steamID3.
+                    You can also enter convert between customURL and steamID64 
+                    (and other types of steamID) on the link below.
                 </TextBlock>
-                
-                
-                
+                <HyperlinkButton NavigateUri="http://steamidconverter.com/">
+                    SteamID Converter
+                </HyperlinkButton>
             </StackPanel>
 
         </Grid>

@@ -58,7 +58,7 @@
                     Text=""
                     FontSize="24"/> -->
 
-                <TextBox 
+                <TextBox
                     Name="steamIdTextBox" 
                     TextAlignment="Left"
                     HorizontalAlignment="Stretch"
@@ -82,17 +82,25 @@
             </StackPanel>
 
             <!-- Panel de info del juego -->
-            <ScrollViewer Grid.Row="1">
+            <ScrollViewer Grid.Row="1" x:Name="infoRoot">
                 <StackPanel Name="MyStackPanel_2">
-                    <TextBlock Name="gameToPlay" 
-                               Style="{ThemeResource SubheaderTextBlockStyle}"
-                               Visibility="Collapsed"/>
+                    <HyperlinkButton Name="gameToPlay">
+                    </HyperlinkButton>
                     <HyperlinkButton x:Name="hyperLinkImg">
                         <Image 
+                            ImageFailed="m_Image_ImageFailed"
                             x:Name="m_Image"              
                             Stretch="UniformToFill"                
                             HorizontalAlignment="Left"/>
                     </HyperlinkButton>
+                    
+                    <TextBlock x:Name="imageFailed"
+                               HorizontalAlignment="Left"
+                               TextWrapping="Wrap"
+                               Foreground="Red"
+                               Text="Image could not be loaded."
+                               FontSize="24"
+                               Visibility="Collapsed"/>
 
                     <TextBlock Name="gameInfo" 
                                Style="{ThemeResource SubheaderTextBlockStyle}"

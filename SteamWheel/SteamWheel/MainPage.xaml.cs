@@ -36,11 +36,11 @@ namespace SteamWheel
         private messagePop msgPop = new messagePop();
         private string _steamID64 = null;
         private SteamUser _user = new SteamUser();
+        private Game _game;
 
         public MainPage()
         {
             this.InitializeComponent();
-
             this.NavigationCacheMode = NavigationCacheMode.Required;
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
@@ -118,14 +118,17 @@ namespace SteamWheel
 
         #endregion
 
+        //Click on Spin it! button
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
+            gameToPlay.Visibility = Visibility.Collapsed;
+                        
             if (Spin_it.IsEnabled)
             {
                 Spin_it.IsEnabled = false;
-                if (steamIdTextBox.Text.Equals(""))
+                if (steamIdTextBox.Text.Equals("") || steamIdTextBox.Text.Equals("enter your community name"))
                 {
-                    msgPop.Pop("Enter your community name.", "Info");
+                    msgPop.Pop("Enter your community name / steamID64.", "Info");
                 }
                 else
                 {
@@ -144,30 +147,33 @@ namespace SteamWheel
                                 _steamID64 = await _user.getSteamID64();
                             }                           
                         }
-
+                        
                         List<object> resultados = await _user.getGame(_steamID64);
-                        Game game = (Game)resultados[0];
+                        _game = (Game)resultados[0];
+
+                        TextBlock gtp = new TextBlock();
+                        gtp.Text = _game.name;
+                        gtp.TextWrapping = TextWrapping.Wrap;                       
+                        gameToPlay.Content = gtp;
+                        
                         m_Image.Source = (ImageSource)resultados[1];
-                        hyperLinkImg.NavigateUri = (Uri)resultados[2];
+                        hyperLinkImg.NavigateUri = new Uri("http://store.steampowered.com/app/" + _game.appid);
                         string time = null;
-                        if (game.playtime_forever < 60)
+                        if (_game.playtime_forever < 60)
                         {
-                            time = game.playtime_forever + " mins.";
+                            time = _game.playtime_forever + " mins.";
                         }
                         else
-                            time = String.Format("{0:0.##}", (double)game.playtime_forever / 60) + " hours.";
+                            time = String.Format("{0:0.##}", (double)_game.playtime_forever / 60) + " hours.";
 
-                        gameInfo.Text = "You have played " + time;
-
-
+                        gameInfo.Text = "Time played: " + time;
                     }
 
-                    //If there isn't any internet connection.
-                    catch (System.NullReferenceException NullEx)
+                    //Error on the httprequest
+                    catch (NullReferenceException httpEx)
                     {
-                        msgPop.Pop(NullEx.Message, "Error");
+                        msgPop.Pop("Could not connect to Steam: An exception ocurred during a http request.", "Error");
                     }
-
                     //Any other exception
                     catch (Exception ex)
                     {
@@ -177,14 +183,15 @@ namespace SteamWheel
                 }
                 Spin_it.IsEnabled = true;
             }
-       }
+        }
 
-
+        //Click on the Help Button
         private void Help_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(Help));
         }
 
+        //Click on the Settings Button
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(Settings));
@@ -209,7 +216,8 @@ namespace SteamWheel
             }
         }
 
-        private async void NumKeyUp(object sender, KeyRoutedEventArgs e)
+        //Click button on Enter key
+        private void NumKeyUp(object sender, KeyRoutedEventArgs e)
         {
 
             if (e.Key == Windows.System.VirtualKey.Enter)
@@ -219,6 +227,22 @@ namespace SteamWheel
             }
 
 
+        }
+
+
+        //If there is no image (some steam games don't have a header)
+        private void m_Image_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            //If the new image is set there was a problem.
+            if (m_Image.Source == new BitmapImage(new Uri("http://media.steampowered.com/steamcommunity/public/images/apps/" + _game.appid + "/" + _game.img_logo_url + ".jpg")))
+            {
+                gameToPlay.NavigateUri = new Uri("http://store.steampowered.com/app/" + _game.appid);
+                gameToPlay.Visibility = Visibility.Visible;
+                imageFailed.Visibility = Visibility.Visible;
+            }
+            //If there is no image
+            else  
+                m_Image.Source = new BitmapImage(new Uri("http://media.steampowered.com/steamcommunity/public/images/apps/" + _game.appid + "/" + _game.img_logo_url + ".jpg"));       
         }
 
     }

@@ -35,6 +35,7 @@ namespace SteamWheel
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
         private messagePop msgPop = new messagePop();
         private string _steamID64 = null;
+        private SteamUser _user = new SteamUser();
 
         public MainPage()
         {
@@ -119,64 +120,63 @@ namespace SteamWheel
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            Spin_it.IsEnabled = false;
-            if (steamIdTextBox.Text.Equals(""))
+            if (Spin_it.IsEnabled)
             {
-                msgPop.Pop("Enter your community name /steamID / steamID3 / steamID64.", "");
-            }
-            else if (!Regex.IsMatch(steamIdTextBox.Text, @"^\d+$"))  //If it's only numbers. (tryparse could overflow if big number)
-            {
-                SteamUser user = new SteamUser(steamIdTextBox.Text);
-                try
+                Spin_it.IsEnabled = false;
+                if (steamIdTextBox.Text.Equals(""))
                 {
-                    if (string.IsNullOrEmpty(_steamID64))
-                    {                 
-                        _steamID64 = await user.getUserName();
-                    }
-
-                    List<object> resultados = await user.getGame(_steamID64);
-                    Game game = (Game)resultados[0];
-                    m_Image.Source = (ImageSource)resultados[1];
-                    hyperLinkImg.NavigateUri = (Uri)resultados[2];
-                    string time = null;
-                    if (game.playtime_forever < 60)
+                    msgPop.Pop("Enter your community name.", "Info");
+                }
+                else
+                {
+                    try
                     {
-                        time = game.playtime_forever + " mins.";
+                        if (!_user.steamId.Equals(steamIdTextBox.Text))
+                        {
+                            
+                            if (Regex.IsMatch(steamIdTextBox.Text, @"^\d+$") && steamIdTextBox.Text.Length == 17 )  //If is all number
+                            {
+                                _steamID64 = steamIdTextBox.Text;
+                            }
+                            else
+                            {
+                                _user.steamId = steamIdTextBox.Text;
+                                _steamID64 = await _user.getSteamID64();
+                            }                           
+                        }
+
+                        List<object> resultados = await _user.getGame(_steamID64);
+                        Game game = (Game)resultados[0];
+                        m_Image.Source = (ImageSource)resultados[1];
+                        hyperLinkImg.NavigateUri = (Uri)resultados[2];
+                        string time = null;
+                        if (game.playtime_forever < 60)
+                        {
+                            time = game.playtime_forever + " mins.";
+                        }
+                        else
+                            time = String.Format("{0:0.##}", (double)game.playtime_forever / 60) + " hours.";
+
+                        gameInfo.Text = "You have played " + time;
+
+
                     }
-                    else
-                        time = String.Format("{0:0.##}", (double)game.playtime_forever / 60) + " hours.";
 
-                    gameInfo.Text = "You have played " + time;                   
-                        
-                                     
+                    //If there isn't any internet connection.
+                    catch (System.NullReferenceException NullEx)
+                    {
+                        msgPop.Pop(NullEx.Message, "Error");
+                    }
+
+                    //Any other exception
+                    catch (Exception ex)
+                    {
+                        msgPop.Pop(ex.Message, "Error");
+                    }
+
                 }
-
-                //If the http request fails, it means an user couldn't be found
-                catch (System.Net.Http.HttpRequestException httpEx)
-                {
-                    msgPop.Pop(httpEx.Message, "Error");
-                }
-
-                //If there isn't any internet connection.
-                catch (System.NullReferenceException)
-                {
-                    msgPop.Pop("An active internet connection is needed.", "Error");
-                }
-
-                //Any other exception
-                catch (Exception ex)
-                {
-                    msgPop.Pop(ex.Message, "Error");
-                }
-
+                Spin_it.IsEnabled = true;
             }
-            else
-            {
-
-                msgPop.Pop("Input a correct steamID64.", "Error");
-                
-            }
-            Spin_it.IsEnabled = true;
        }
 
 
@@ -188,6 +188,37 @@ namespace SteamWheel
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(Settings));
+        }
+
+        // Handlers for Got/Lost Focus of the textBox steamID
+        private void steamIdTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (steamIdTextBox.Text.Equals("enter your community name"))
+            {
+                steamIdTextBox.Text = "";
+                steamIdTextBox.Foreground = new SolidColorBrush(Windows.UI.Colors.Black);              
+            }
+        }
+
+        private void steamIdTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(steamIdTextBox.Text))
+            {
+                steamIdTextBox.Foreground = new SolidColorBrush(Windows.UI.Colors.Gray);
+                steamIdTextBox.Text = "enter your community name";
+            }
+        }
+
+        private async void NumKeyUp(object sender, KeyRoutedEventArgs e)
+        {
+
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                Spin_it.Focus(FocusState.Programmatic);
+                Button_Click(sender, e);
+            }
+
+
         }
 
     }

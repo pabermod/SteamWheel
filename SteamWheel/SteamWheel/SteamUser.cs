@@ -35,25 +35,49 @@ namespace SteamWheel
             _steamId = steamId;         
         }
 
-
-        /*
-        * Async method to get the player info
-        */
-        public async Task<string> getUserName()
+        // Default empty method
+        public SteamUser()
         {
+            _steamId = "";
+        }
+        
+        // OLD -- Async method to convert any type of steamID to steamID64.
+        public async Task<string> steamIDConverter()
+        {
+                     
             string webText = await GetWebPageAsync("http://steamidconverter.com/" + _steamId);
-
             HtmlDocument htmlDoc = new HtmlAgilityPack.HtmlDocument();
             htmlDoc.OptionFixNestedTags = true;
             htmlDoc.LoadHtml(webText);
+            try
+            {            
             HtmlNode divContainer = htmlDoc.GetElementbyId("steamID64");
-            return divContainer.InnerText;
+            return divContainer.InnerText; 
+            }
+            catch (Exception)
+            {
+                _steamId = "";
+                throw new Exception("User not found.");
+            }
         }
 
-        /*
-        * Async method to get a random game from an user gamelist
-        */
-        public async Task<List<object>> getGame(string caca)
+        //Async method to get the player steamID64
+        public async Task<string> getSteamID64()
+        {
+            string url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + APIKey + "&vanityurl=" + _steamId;
+            string webText = await GetWebPageAsync(url); //async method, saves json_data in "content" string.
+            RootObject rootObject = _download_serialized_json_data<RootObject>(webText);
+            if (rootObject.response.success.Equals(1))
+                return rootObject.response.steamid;
+            else
+            {
+                _steamId = "";
+                throw new Exception("User not found.");
+            }                
+        }
+
+        // Async method to get a random game from an user gamelist
+        public async Task<List<object>> getGame(string steamID64)
         {
 
             //If wifi is connected use higher quality logo
@@ -68,12 +92,14 @@ namespace SteamWheel
             }
 
             //URL for the petition
-            var url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + APIKey + "&steamid=" + caca + "&format=json&include_appinfo=1";
-            string webText = await GetWebPageAsync(url); //async method, saves json_data in "content" string.
+            var url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + APIKey + "&steamid=" + steamID64 + "&format=json&include_appinfo=1";
+            string webText = await GetWebPageAsync(url); //async method, saves json_data in "content" string.        
             var rootObject = _download_serialized_json_data<RootObject>(webText);
             int num_games = rootObject.response.game_count;
             int rand_game = R.Next(num_games);
-            Game game = rootObject.response.games[rand_game];
+            Game game;
+            try { game = rootObject.response.games[rand_game]; }
+            catch (Exception) { throw new Exception("User not found."); }       
             Uri storelink = new Uri("http://store.steampowered.com/app/" + game.appid);
             ImageSource imgsrc;
             if (is_wifi_connected)
@@ -87,25 +113,29 @@ namespace SteamWheel
             return result;
         }   
 
-        /*
-        * Async method to get the data from an url
-        */
+        // Async method to get data from an url
         private async Task<string> GetWebPageAsync(string url)
         {
-            Task<string> getStringTask = (new HttpClient()).GetStringAsync(url);
-            string webText = await getStringTask;
-            return webText;
+            try
+            {
+                Task<string> getStringTask = (new HttpClient()).GetStringAsync(url);
+                string webText = await getStringTask;
+                return webText;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Internezz");
+            }
         }
 
-        /*
-        * Method to deserialize json data
-        */
+        // Method to deserialize json data
         private static T _download_serialized_json_data<T>(string json_data) where T : new()
         {
             // if string with JSON data is not empty, deserialize it to class and return its instance 
             return !string.IsNullOrEmpty(json_data) ? JsonConvert.DeserializeObject<T>(json_data) : new T();
         }
 
+        //Test method for metacritic API
         public async Task<object> prueba()
         {
             try

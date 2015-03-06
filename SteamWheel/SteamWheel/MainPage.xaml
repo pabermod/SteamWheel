@@ -34,7 +34,7 @@
         <!-- Panel de título -->
         <StackPanel Grid.Row="0" Margin="19,0,0,0">
             <TextBlock Text="STEAM WHEEL" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="random game" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" 
+            <TextBlock x:Name="subtitle" Text="random game" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" 
                        CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
@@ -51,12 +51,12 @@
                 Name="myStackPanel"  
                 HorizontalAlignment="Left"
                 >
-
+                <!--
                 <TextBlock 
                     HorizontalAlignment="Left"
                     TextWrapping="Wrap" 
-                    Text="Enter your community name"
-                    FontSize="24"/>
+                    Text=""
+                    FontSize="24"/> -->
 
                 <TextBox 
                     Name="steamIdTextBox" 
@@ -64,8 +64,13 @@
                     HorizontalAlignment="Stretch"
                     TextWrapping="NoWrap"
                     VerticalAlignment="Top"
-                    Text=""
-                    FontSize="24"/>
+                    Foreground="Gray"
+                    GotFocus="steamIdTextBox_GotFocus"
+                    LostFocus="steamIdTextBox_LostFocus"
+                    KeyUp="NumKeyUp"
+                    Text="enter your community name"
+                    Width="280"
+                    />
             
                 <Button
                     Name="Spin_it"

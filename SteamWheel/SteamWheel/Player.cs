@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SteamWheel
 {
+    //Player class from steam web api
     public class Player
     {
         public string steamid { get; set; }

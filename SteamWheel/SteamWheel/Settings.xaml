@@ -29,10 +29,13 @@
 
         <!--TODO: Debe colocarse el contenido en la siguiente cuadrícula-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-        
-            <TextBlock Name="textSettings" Style="{ThemeResource BodyTextBlockStyle}">
+            <StackPanel x:Name="SettingsPanel">
+                <TextBlock Name="textSettings" Style="{ThemeResource BodyTextBlockStyle}">
                 Oops! This section is still in development. Check again in the next release!
-            </TextBlock>
+                </TextBlock>
+                <Button x:Name="getRSS" Content="Get RSS" Click="getRSS_Click"></Button>
+            </StackPanel>
+            
             
         </Grid>
     </Grid>

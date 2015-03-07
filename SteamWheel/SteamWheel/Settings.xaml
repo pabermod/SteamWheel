@@ -33,7 +33,6 @@
                 <TextBlock Name="textSettings" Style="{ThemeResource BodyTextBlockStyle}">
                 Oops! This section is still in development. Check again in the next release!
                 </TextBlock>
-                <Button x:Name="getRSS" Content="Get RSS" Click="getRSS_Click"></Button>
             </StackPanel>
             
             

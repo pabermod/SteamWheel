@@ -32,11 +32,7 @@ namespace SteamWheel
     /// </summary>
     public sealed partial class Settings : Page
     {
-        // Global variable
-        private int imageCount = 0;
-        private string[] imgarray;
-        private messagePop msgPop = new messagePop();
-
+      
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
 
@@ -121,80 +117,7 @@ namespace SteamWheel
 
         #endregion
 
-        // pass above url in this method as input argument 
-        public async void DownloadRSS(string rssURL)
-        {
-            string webText;
-            try 
-            { webText = await GetWebPageAsync(rssURL); }
-            catch{ throw new Exception("User not found."); }
-
-            myRSS_DownloadStringCompleted(webText);
-
-        }
-
-        //Method to get the image URL
-        void myRSS_DownloadStringCompleted(string RSS)
-        {
-            ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile(); 
-
-            //Check if the Network is available
-            if (InternetConnectionProfile.GetNetworkConnectivityLevel() != NetworkConnectivityLevel.None)
-            {
-                // filter all images from rss located on media:content 
-                XNamespace media = XNamespace.Get("http://search.yahoo.com/mrss/");
-                //imgarray = XElement.Parse(RSS).Descendants(media + "content")
-                 //   .Where(m => m.Attribute("type").Value == "image/jpeg")
-                 //   .Select(m => m.Attribute("url").Value)
-                 //   .ToArray();
-                XName title = new XName();
-                string imgarray = XElement.Parse(RSS).Element(title).ToString();
-
-                // check that images are there in rss 
-                if (imgarray.Length>0)
-                {
-                    imageCount = 0;
-                    // download images 
-                    //DownloadImagefromServer(Convert.ToString(imgarray[0]));
-                    TextBlock gtp = new TextBlock();
-                    //gtp.Text = Convert.ToString(imgarray[0]);
-                    gtp.Text = imgarray;
-                    gtp.TextWrapping = TextWrapping.Wrap;
-                    SettingsPanel.Children.Add(gtp);
-                }
-                else
-                {
-                    msgPop.Pop("No image found in applied RSS link", "Error");
-                    
-                }
-
-            }
-            else
-            {
-                msgPop.Pop("No network is available.", "Error");
-            }
-        }
 
 
-        // Async method to get data from an url
-        private async Task<string> GetWebPageAsync(string url)
-        {
-            try
-            {
-                Task<string> getStringTask = (new HttpClient()).GetStringAsync(url);
-                string webText = await getStringTask;
-                return webText;
-            }
-            catch
-            {
-                throw new NullReferenceException();
-            }
-        }
-
-        private void getRSS_Click(object sender, RoutedEventArgs e)
-        {
-            //DownloadRSS("http://www.degraeve.com/flickr-rss/rss.php?tags=nature&tagmode=all&sort=interestingness-desc&num=24");
-            DownloadRSS("http://apod.nasa.gov/apod.rss");
-        }
     }
 }

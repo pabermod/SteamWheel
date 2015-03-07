@@ -40,14 +40,14 @@
                     http://steamcommunity.com/id/customURL   
                 </TextBlock>
                 <TextBlock Style="{ThemeResource ControlContextualInfoTextBlockStyle}">
-                    If you have private profile, you can also enter your steamID64, which is unique.
+                    If you have a private profile, you can also enter your steamID64, which is unique.
                     You can get it from your profile link, which is like:
                 </TextBlock>
                 <TextBlock FontSize="14" Style="{ThemeResource ControlContextualInfoTextBlockStyle}">
                 http://steamcommunity.com/profiles/steamID64
                 </TextBlock>
                 <TextBlock Style="{ThemeResource ControlContextualInfoTextBlockStyle}">
-                    You can also enter convert between customURL and steamID64 
+                    You can also convert between customURL and steamID64 
                     (and other types of steamID) on the link below.
                 </TextBlock>
                 <HyperlinkButton NavigateUri="http://steamidconverter.com/">

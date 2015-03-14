@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Popups;
 using System.Text.RegularExpressions;
 using SteamWheel.Common;
+using Windows.UI.ViewManagement;
 
 
 // La plantilla de elemento Página en blanco está documentada en http://go.microsoft.com/fwlink/?LinkId=391641
@@ -37,6 +38,8 @@ namespace SteamWheel
         private string _steamID64 = null;
         private SteamUser _user = new SteamUser();
         private Game _game;
+        //Barra de progreso
+        StatusBarProgressIndicator progressbar = StatusBar.GetForCurrentView().ProgressIndicator;
 
         public MainPage()
         {
@@ -121,6 +124,10 @@ namespace SteamWheel
         //Click on Spin it! button
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
+
+            progressbar.Text = "Loading...";
+            await progressbar.ShowAsync();
+            
             gameToPlay.Visibility = Visibility.Collapsed;
                         
             if (Spin_it.IsEnabled)
@@ -170,7 +177,7 @@ namespace SteamWheel
                     }
 
                     //Error on the httprequest
-                    catch (NullReferenceException httpEx)
+                    catch (NullReferenceException)
                     {
                         msgPop.Pop("Could not connect to Steam: An exception ocurred during a http request.", "Error");
                     }
@@ -181,6 +188,8 @@ namespace SteamWheel
                     }
 
                 }
+
+                await progressbar.HideAsync();
                 Spin_it.IsEnabled = true;
             }
         }

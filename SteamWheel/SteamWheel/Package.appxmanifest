@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="44539kbronctjr.SteamWheel" Publisher="CN=C0AA261B-33A8-424C-81B4-D66A524BC1C5" Version="1.1.1.0" />
+  <Identity Name="44539kbronctjr.SteamWheel" Publisher="CN=C0AA261B-33A8-424C-81B4-D66A524BC1C5" Version="1.1.1.2" />
   <mp:PhoneIdentity PhoneProductId="448cfab5-ef08-4045-930d-9c3d232c4fab" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Steam Wheel</DisplayName>

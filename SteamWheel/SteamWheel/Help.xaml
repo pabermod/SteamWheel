@@ -31,6 +31,10 @@
         <!--TODO: Debe colocarse el contenido en la siguiente cuadrícula-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
             <StackPanel>
+                <TextBlock Style="{ThemeResource ControlContextualInfoTextBlockStyle}"
+                           Name="HelpVersion"
+                           FontSize="24">
+                </TextBlock>
                 <TextBlock Style="{ThemeResource ControlContextualInfoTextBlockStyle}">
                     Your Steam community name, also known as customURL is usually 
                     your username.  A customURL must be set in your steam profile

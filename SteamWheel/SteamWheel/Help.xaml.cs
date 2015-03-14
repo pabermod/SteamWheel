@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using HtmlAgilityPack;
 using System.Net.Http;
+using Windows.ApplicationModel;
 
 // La plantilla de elemento Página básica está documentada en http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -71,6 +72,9 @@ namespace SteamWheel
         /// anterior. El estado será null la primera vez que se visite una página.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
+            var version = Package.Current.Id.Version;
+            string versionText = version.Build+"."+version.Major+"."+version.Minor+"."+version.Revision;
+            HelpVersion.Text = "Steam Wheel " + versionText;
         }
 
         /// <summary>

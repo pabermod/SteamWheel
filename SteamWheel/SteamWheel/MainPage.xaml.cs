@@ -20,6 +20,7 @@ using Windows.UI.Popups;
 using System.Text.RegularExpressions;
 using SteamWheel.Common;
 using Windows.UI.ViewManagement;
+using unirest_net.http;
 
 
 // La plantilla de elemento Página en blanco está documentada en http://go.microsoft.com/fwlink/?LinkId=391641
@@ -174,6 +175,19 @@ namespace SteamWheel
                             time = String.Format("{0:0.##}", (double)_game.playtime_forever / 60) + " hours.";
 
                         gameInfo.Text = "Time played: " + time;
+
+                        RootObject metacritic = (RootObject)await _user.getMetacritic("ORION: Prelude");
+
+                        Result result = metacritic.result as Result;
+                        if (result != null)
+                        {
+                            gameInfo.Text = result.genre[0];
+                        }
+                        else
+                        {
+                            gameInfo.Text = ((bool)metacritic.result).ToString();
+                        }
+
                     }
 
                     //Error on the httprequest
@@ -193,6 +207,8 @@ namespace SteamWheel
                 Spin_it.IsEnabled = true;
             }
         }
+
+
 
         //Click on the Help Button
         private void Help_Click(object sender, RoutedEventArgs e)

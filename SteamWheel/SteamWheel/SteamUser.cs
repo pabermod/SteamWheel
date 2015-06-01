@@ -11,6 +11,7 @@ using Windows.Storage;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using HtmlAgilityPack;
+using unirest_net.http;
 
 namespace SteamWheel
 {
@@ -20,6 +21,7 @@ namespace SteamWheel
         // Private variables
         private string _steamId;
         private string APIKey = "453412963F6C3B0EBD4ED9C2C79822DD";
+        private string MetacriticAPIKey = "LTIsnewGsImsh10Hh7mENQoaYhEOp10U1dtjsnKTzeLLD8o43c";
         private Random R = new Random();
 
         // get-set for steamId
@@ -39,27 +41,7 @@ namespace SteamWheel
         public SteamUser()
         {
             _steamId = "";
-        }
-        
-        // OLD -- Async method to convert any type of steamID to steamID64.
-        public async Task<string> steamIDConverter()
-        {
-                     
-            string webText = await GetWebPageAsync("http://steamidconverter.com/" + _steamId);
-            HtmlDocument htmlDoc = new HtmlAgilityPack.HtmlDocument();
-            htmlDoc.OptionFixNestedTags = true;
-            htmlDoc.LoadHtml(webText);
-            try
-            {            
-            HtmlNode divContainer = htmlDoc.GetElementbyId("steamID64");
-            return divContainer.InnerText; 
-            }
-            catch (Exception)
-            {
-                _steamId = "";
-                throw new Exception("User not found.");
-            }
-        }
+        }      
 
         //Async method to get the player steamID64
         public async Task<string> getSteamID64()
@@ -185,6 +167,26 @@ namespace SteamWheel
             }
 
 
+        }
+
+        // Get metacritic
+        public async Task<object> getMetacritic(string GameName)
+        {
+            // These code snippets use an open-source library. http://unirest.io/net
+             Task<HttpResponse<object>> response = Unirest.get("https://metacritic-2.p.mashape.com/find/game?platform=pc&title=" + GameName)
+            .header("X-Mashape-Key", MetacriticAPIKey)
+            .header("Accept", "application/json")
+            .asJsonAsync<object>();
+
+            await response;
+
+            string result = response.Result.Body.ToString();
+
+            RootObject rootObject = null;
+            if (!string.IsNullOrEmpty(result))
+                rootObject = JsonConvert.DeserializeObject<RootObject>(result);
+
+            return rootObject;
         }
 
     }

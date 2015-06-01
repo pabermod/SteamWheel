@@ -9,7 +9,9 @@ namespace SteamWheel
     public class RootObject
     {
         public Response response { get; set; }
-        public Result result { get; set; }
+        public object result { get; set; } 
         public List<Result> results { get; set; }
+        public Genres genres { get; set; }
+
     }
 }

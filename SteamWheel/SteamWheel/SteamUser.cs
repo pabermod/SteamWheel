@@ -21,7 +21,6 @@ namespace SteamWheel
         // Private variables
         private string _steamId;
         private string APIKey = "453412963F6C3B0EBD4ED9C2C79822DD";
-        private string MetacriticAPIKey = "LTIsnewGsImsh10Hh7mENQoaYhEOp10U1dtjsnKTzeLLD8o43c";
         private Random R = new Random();
 
         // get-set for steamId
@@ -169,20 +168,23 @@ namespace SteamWheel
 
         }
 
-        // Get metacritic
-        public async Task<object> getMetacritic(string GameName)
+        // Get gameInfo
+        public async Task<object> gameInfo(int GameId)
         {
             // These code snippets use an open-source library. http://unirest.io/net
-             Task<HttpResponse<object>> response = Unirest.get("https://metacritic-2.p.mashape.com/find/game?platform=pc&title=" + GameName)
-            .header("X-Mashape-Key", MetacriticAPIKey)
-            .header("Accept", "application/json")
+             Task<HttpResponse<object>> response = Unirest.get("http://store.steampowered.com/api/appdetails?appids=" + GameId +"&l=spanish")
             .asJsonAsync<object>();
 
             await response;
 
-            string result = response.Result.Body.ToString();
+            string json = response.Result.Body.ToString();
+
+            Dictionary<string, object> sData = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+
+            string result = sData[GameId.ToString()].ToString();
 
             RootObject rootObject = null;
+
             if (!string.IsNullOrEmpty(result))
                 rootObject = JsonConvert.DeserializeObject<RootObject>(result);
 

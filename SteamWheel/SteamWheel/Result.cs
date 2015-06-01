@@ -20,5 +20,6 @@ namespace SteamWheel
         public string rating { get; set; }
         public string rlsdate { get; set; }
         public string url { get; set; }
+
     }
 }

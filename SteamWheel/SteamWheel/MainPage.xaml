@@ -103,8 +103,7 @@
                                Visibility="Collapsed"/>
 
                     <TextBlock Name="gameInfo" 
-                               Style="{ThemeResource SubheaderTextBlockStyle}"
-                               />
+                               Style="{ThemeResource SubheaderTextBlockStyle}"/>
                 </StackPanel>
             </ScrollViewer>
         </Grid>

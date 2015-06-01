@@ -21,6 +21,8 @@ using System.Text.RegularExpressions;
 using SteamWheel.Common;
 using Windows.UI.ViewManagement;
 using unirest_net.http;
+using HtmlAgilityPack;
+using Windows.UI.Xaml.Markup;
 
 
 // La plantilla de elemento Página en blanco está documentada en http://go.microsoft.com/fwlink/?LinkId=391641
@@ -176,18 +178,49 @@ namespace SteamWheel
 
                         gameInfo.Text = "Time played: " + time;
 
-                        RootObject metacritic = (RootObject)await _user.getMetacritic("ORION: Prelude");
+                        RootObject StoreInfo = (RootObject)await _user.gameInfo(_game.appid);
 
-                        Result result = metacritic.result as Result;
-                        if (result != null)
+                        if (StoreInfo.success)
                         {
-                            gameInfo.Text = result.genre[0];
-                        }
-                        else
-                        {
-                            gameInfo.Text = ((bool)metacritic.result).ToString();
-                        }
+                           
+                            HtmlDocument documento = new HtmlDocument();
+                            documento.LoadHtml(StoreInfo.data.about_the_game);
 
+                            foreach (HtmlNode child in documento.DocumentNode.ChildNodes)
+                            {
+                                if (child.Name.Equals("h2"))
+                                {
+                                    TextBlock txt = new TextBlock();
+                                    txt.TextWrapping = TextWrapping.Wrap;
+                                    txt.Text = child.InnerText;
+                                    txt.FontSize = 16;
+                                    txt.FontWeight = Windows.UI.Text.FontWeights.Bold;
+                                    txt.Margin = new Thickness(0, 10, 0, 0);
+                                    MyStackPanel_2.Children.Add(txt);
+                                }
+                                else if (child.Name.Equals("ul"))
+                                {
+                                    TextBlock txt = new TextBlock();
+                                    txt.TextWrapping = TextWrapping.Wrap;
+                                    txt.FontSize = 12;
+                                    txt.FontWeight = Windows.UI.Text.FontWeights.Normal;
+                                    foreach (HtmlNode li in child.ChildNodes)
+                                    {
+                                        txt.Text += "- " + li.InnerText;
+                                    }
+                                    MyStackPanel_2.Children.Add(txt);
+                                }
+                                else
+                                {
+                                    TextBlock txt = new TextBlock();
+                                    txt.TextWrapping = TextWrapping.Wrap;
+                                    txt.FontSize = 12;
+                                    txt.FontWeight = Windows.UI.Text.FontWeights.Normal;
+                                    txt.Text = child.InnerText; 
+                                    MyStackPanel_2.Children.Add(txt);
+                                }
+                            }
+                        }
                     }
 
                     //Error on the httprequest
@@ -271,4 +304,5 @@ namespace SteamWheel
         }
 
     }
+
 }
